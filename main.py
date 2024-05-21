@@ -14,12 +14,10 @@ StatusList = []
 count = 1
 
 def CleanImages():
-    print("cleaning images...")
     images = glob.glob("images/*.png")
     for image in images:
         os.remove(image)
-    print("done cleaning images...")
-
+        
 
 while True:
 
