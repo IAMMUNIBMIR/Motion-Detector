@@ -14,24 +14,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;  
             text-align: center;
         }
 
         h1 {
             font-size: 5rem;
             font-weight: bold;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 10px;
+            margin-top: 10vh;
         }
 
         h2 {
             font-size: 3rem;
             font-weight: bold;
-            justify-content: center;
-            text-align: center;
         }  
 
         .email-input {
@@ -43,54 +37,64 @@
 
         #scroll-arrow {
             position: absolute;
-            bottom: -2rem;
+            bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
             font-size: 2rem;
             cursor: pointer;
             animation: bounce 1s infinite;
             color: #D9DDDC;
-            z-index: 1;
+        }
+
+        #email-section {
+            margin-top: 100vh; /* Adjust this value to place the section further down */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
-
 </head>
 <body>
-
     <h1>Welcome to my <br> Motion Detector</h1>
     <h2>Motion in Focus: Your Gateway to Surveillance</h2>
-    <div id="scroll-arrow" onclick="scrollToTextBox()">&#9660;</div>
+    <div id="scroll-arrow" onclick="scrollToEmailSection()">&#9660;</div>
 
-    <!-- Email Input -->
-    <input type="email" class="email-input" id="recipientEmail" placeholder="Enter recipient email address">
-    <p id="emailValidityResult"></p>
+    <!-- New Email Section -->
+    <div id="email-section">
+        <h2>Enter Your Email Address</h2>
+        <form action="/submit" method="post">
+            <input type="email" class="email-input" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
+            <p id="emailValidityResult"></p>
+        </form>
+    </div>
 
-</body>
-
-<script>
-    function scrollToTextBox() {
-        document.getElementById('recipientEmail').scrollIntoView({
-            behavior: 'smooth'
+    <script>
+        document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkEmailValidity();
+                if (document.getElementById('emailValidityResult').textContent === 'Email address is valid.') {
+                    this.form.submit();
+                }
+            }
         });
-    }
 
-    function checkEmailValidity() {
-        var email = document.getElementById('recipientEmail').value;
-        var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
-
-        if (emailRegex.test(email)) {
-            document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
-        } else {
-            document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
+        function scrollToEmailSection() {
+            document.getElementById('email-section').scrollIntoView({
+                behavior: 'smooth'
+            });
         }
-    }
 
-    // Trigger the checkEmailValidity function when Enter key is pressed
-    document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            checkEmailValidity();
+        function checkEmailValidity() {
+            var email = document.getElementById('recipientEmail').value;
+            var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
+
+            if (emailRegex.test(email)) {
+                document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
+            } else {
+                document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
+            }
         }
-    });
-</script>
-
+    </script>
+</body>
 </html>
