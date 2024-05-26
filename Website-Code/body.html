@@ -47,7 +47,7 @@
         }
 
         #email-section {
-            margin-top: 50vh; /* Adjust this value to place the section further down */
+            margin-top: 60vh; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -81,33 +81,16 @@
         </form>
     </div>
 
+    <p>Enter a valid email address to activate the motion detector. 
+        
+        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.</p>
+    </p>
+
+    <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
+
     <script>
-        document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                checkEmailValidity();
-                if (document.getElementById('emailValidityResult').textContent === 'Email address is valid.') {
-                    this.form.submit();
-                }
-            }
-        });
-
-        function scrollToEmailSection() {
-            document.getElementById('email-section').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        function checkEmailValidity() {
-            var email = document.getElementById('recipientEmail').value;
-            var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
-
-            if (emailRegex.test(email)) {
-                document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
-            } else {
-                document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
-            }
-        }
+        var video = document.getElementById("video_feed");
+        video.src = "{{ url_for('video_feed') }}";
     </script>
 </body>
 </html>
