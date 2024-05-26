@@ -1,3 +1,3 @@
 [build]
-command = "python MotionDetectorDeploy.py"
-publish = "Website Code" 
+command = "python3 MotionDetectorDeploy.py"
+publish = "Website-Code" 
