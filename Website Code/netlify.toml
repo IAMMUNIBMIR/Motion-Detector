@@ -1,0 +1,3 @@
+[build]
+command = "python3 MotionDetectorDeploy.py"
+publish = "Website Code" 
