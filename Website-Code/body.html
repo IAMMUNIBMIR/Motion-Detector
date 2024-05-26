@@ -34,11 +34,11 @@
             text-align: center;
         }  
 
-        button {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            margin-top: 1rem;
-            cursor: pointer;
+        .email-input {
+            margin-top: 20px;
+            width: 300px;
+            padding: 10px;
+            font-size: 1rem;
         }
 
         #scroll-arrow {
@@ -52,14 +52,6 @@
             color: #D9DDDC;
             z-index: 1;
         }
-
-        .email-input {
-            margin-top: 20px;
-            width: 300px;
-            padding: 10px;
-            font-size: 1rem;
-        }
-
     </style>
 
 </head>
@@ -71,7 +63,6 @@
 
     <!-- Email Input -->
     <input type="email" class="email-input" id="recipientEmail" placeholder="Enter recipient email address">
-    <button onclick="checkEmailValidity()">Check Email Validity</button>
     <p id="emailValidityResult"></p>
 
 </body>
@@ -84,16 +75,22 @@
     }
 
     function checkEmailValidity() {
-    var email = document.getElementById('recipientEmail').value;
-    var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
+        var email = document.getElementById('recipientEmail').value;
+        var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
 
-    if (emailRegex.test(email)) {
-        document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
-    } else {
-        document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
-    }
+        if (emailRegex.test(email)) {
+            document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
+        } else {
+            document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
+        }
     }
 
+    // Trigger the checkEmailValidity function when Enter key is pressed
+    document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkEmailValidity();
+        }
+    });
 </script>
 
 </html>
