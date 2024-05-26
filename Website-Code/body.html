@@ -64,6 +64,7 @@
                 transform: translateY(-5px);
             }
         }
+
     </style>
 </head>
 <body>
@@ -81,8 +82,10 @@
     </div>
 
     <p>
-        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.
+        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.</p>
     </p>
+
+    <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
 
     <script>
         document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
@@ -90,7 +93,7 @@
                 e.preventDefault();
                 checkEmailValidity();
                 if (document.getElementById('emailValidityResult').textContent === 'Email address is valid.') {
-                    submitForm(); // Submit the form asynchronously
+                    submitForm();
                 }
             }
         });
@@ -126,6 +129,9 @@
                 document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
             }
         }
+
+        var video = document.getElementById("video_feed");
+        video.src = "{{ url_for('video_feed') }}";
     </script>
 </body>
 </html>
