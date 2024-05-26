@@ -22,7 +22,7 @@ def CleanImages():
         os.remove(image)
 
 def motion_detection():
-    global activate_motion_detector, InitialFrame, StatusList, count
+    global activate_motion_detector
 
     while True:
         if not activate_motion_detector:
@@ -94,9 +94,12 @@ def submit():
     global activate_motion_detector
 
     email = request.form['email']
-    if email.endswith(('gmail.com', 'hotmail.com', 'yahoo.com')):
+    print("Received email:", email)  # Debugging line
+    if email.endswith('@gmail.com') or email.endswith('@hotmail.com') or email.endswith('@yahoo.com'):
         activate_motion_detector = True
-    return ''  # Return an empty response
+        return "Motion detector activated. You will receive notifications via email."
+    else:
+        return "Invalid email address. Please use a Gmail, Hotmail, or Yahoo email."
 
 if __name__ == "__main__":
     app.run(debug=True)
