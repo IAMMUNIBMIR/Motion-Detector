@@ -4,7 +4,7 @@ import glob
 import os
 from emailing import Alert
 from threading import Thread
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, request, Response
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ time.sleep(1)
 InitialFrame = None
 StatusList = []
 count = 1
-activate_motion_detector = True  # Automatically activate motion detector
+activate_motion_detector = False
 
 def CleanImages():
     images = glob.glob("images/*.png")
@@ -22,7 +22,7 @@ def CleanImages():
         os.remove(image)
 
 def motion_detection():
-    global InitialFrame, count, activate_motion_detector
+    global activate_motion_detector, InitialFrame, StatusList, count
 
     while True:
         if not activate_motion_detector:
@@ -88,6 +88,15 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(motion_detection(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    global activate_motion_detector
+
+    email = request.form['email']
+    if email.endswith(('gmail.com', 'hotmail.com', 'yahoo.com')):
+        activate_motion_detector = True
+    return ''  # Return an empty response
 
 if __name__ == "__main__":
     app.run(debug=True)
