@@ -53,12 +53,6 @@
             align-items: center;
         }
 
-        #video_feed {
-            margin-top: 20px;
-            width: 640px;
-            height: 480px;
-        }
-
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
@@ -70,7 +64,6 @@
                 transform: translateY(-5px);
             }
         }
-
     </style>
 </head>
 <body>
@@ -80,8 +73,8 @@
 
     <!-- New Email Section -->
     <div id="email-section">
-        <h2>Enter your email address activate the motion detector. </h2>
-        <form action="/submit" method="post">
+        <h2>Enter your email address to activate the motion detector.</h2>
+        <form id="emailForm" action="/submit" method="post">
             <input type="email" class="email-input" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
             <p id="emailValidityResult"></p>
         </form>
@@ -91,18 +84,47 @@
         <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.
     </p>
 
-    <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
-
     <script>
-        var video = document.getElementById("video_feed");
-        video.src = "{{ url_for('video_feed') }}";
-    </script>
+        document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkEmailValidity();
+                if (document.getElementById('emailValidityResult').textContent === 'Email address is valid.') {
+                    submitForm(); // Submit the form asynchronously
+                }
+            }
+        });
 
-    <script>
+        function submitForm() {
+            var formData = new FormData(document.getElementById('emailForm'));
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Show the response message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         function scrollToEmailSection() {
             document.getElementById('email-section').scrollIntoView({
                 behavior: 'smooth'
             });
+        }
+
+        function checkEmailValidity() {
+            var email = document.getElementById('recipientEmail').value;
+            var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
+
+            if (emailRegex.test(email)) {
+                document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
+            } else {
+                document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
+            }
         }
     </script>
 </body>
