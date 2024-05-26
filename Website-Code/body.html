@@ -53,11 +53,6 @@
             align-items: center;
         }
 
-        #video-container {
-            margin-top: 50px;
-            display: none; /* Hide video initially */
-        }
-
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
@@ -87,49 +82,21 @@
     </div>
 
     <p>
-        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.
+        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.</p>
     </p>
 
-    <!-- Video Container -->
-    <div id="video-container">
-        <h2>Live Video Feed</h2>
-        <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
-    </div>
+    <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
 
     <script>
-        var videoContainer = document.getElementById("video-container");
         var video = document.getElementById("video_feed");
+        video.src = "{{ url_for('video_feed') }}";
+    </script>
 
+    <script>
         function scrollToEmailSection() {
             document.getElementById('email-section').scrollIntoView({
                 behavior: 'smooth'
             });
-        }
-
-        document.getElementById('recipientEmail').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                checkEmailValidity();
-                if (document.getElementById('emailValidityResult').textContent === 'Email address is valid.') {
-                    activateMotionDetector();
-                }
-            }
-        });
-
-        function checkEmailValidity() {
-            var email = document.getElementById('recipientEmail').value;
-            var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
-
-            if (emailRegex.test(email)) {
-                document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
-            } else {
-                document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
-            }
-        }
-
-        function activateMotionDetector() {
-            videoContainer.style.display = 'block'; // Show video container
-            video.src = "{{ url_for('video_feed') }}"; // Set video source
         }
     </script>
 </body>
