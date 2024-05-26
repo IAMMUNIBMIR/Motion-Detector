@@ -95,11 +95,8 @@ def submit():
 
     email = request.form['email']
     print("Received email:", email)  # Debugging line
-    if email.endswith('@gmail.com') or email.endswith('@hotmail.com') or email.endswith('@yahoo.com'):
-        activate_motion_detector = True
-        return "Motion detector activated. You will receive notifications via email."
-    else:
-        return "Invalid email address. Please use a Gmail, Hotmail, or Yahoo email."
+    activate_motion_detector = True
+    return "Motion detector activated. You will receive notifications via email."
 
 if __name__ == "__main__":
     app.run(debug=True)
