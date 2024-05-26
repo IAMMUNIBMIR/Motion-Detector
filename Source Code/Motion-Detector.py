@@ -23,6 +23,9 @@ def CleanImages():
 
 def motion_detection():
     global activate_motion_detector
+    global InitialFrame
+    global StatusList
+    global count
 
     while True:
         if not activate_motion_detector:
@@ -94,9 +97,11 @@ def submit():
     global activate_motion_detector
 
     email = request.form['email']
-    print("Received email:", email)  # Debugging line
-    activate_motion_detector = True
-    return "Motion detector activated. You will receive notifications via email."
+    if email:  # Ensure email is not empty
+        activate_motion_detector = True
+        return "Motion detector activated. You will receive notifications via email."
+    else:
+        return "Invalid email address."
 
 if __name__ == "__main__":
     app.run(debug=True)
