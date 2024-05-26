@@ -65,22 +65,6 @@
             }
         }
 
-        #video-container {
-            margin-top: 30px;
-            position: relative;
-            width: 640px;
-            height: 480px;
-            overflow: hidden;
-        }
-
-        #video_feed {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: auto;
-        }
     </style>
 </head>
 <body>
@@ -90,7 +74,7 @@
 
     <!-- New Email Section -->
     <div id="email-section">
-        <h2>Enter your email address to activate the motion detector. </h2>
+        <h2>Enter your email address activate the motion detector. </h2>
         <form action="/submit" method="post">
             <input type="email" class="email-input" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
             <p id="emailValidityResult"></p>
@@ -98,24 +82,14 @@
     </div>
 
     <p>
-        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.
+        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.</p>
     </p>
 
-    <div id="video-container">
-        <video id="video_feed" autoplay playsinline></video>
-    </div>
+    <video id="video_feed" autoplay playsinline style="width: 640px; height: 480px;"></video>
 
     <script>
         var video = document.getElementById("video_feed");
         video.src = "{{ url_for('video_feed') }}";
-    </script>
-
-    <script>
-        function scrollToEmailSection() {
-            document.getElementById('email-section').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
     </script>
 </body>
 </html>
