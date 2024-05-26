@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0B0705;
+            color: #D9DDDC;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;  
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: bold;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: bold;
+            justify-content: center;
+            text-align: center;
+        }  
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        #scroll-arrow {
+            position: absolute;
+            bottom: -2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            cursor: pointer;
+            animation: bounce 1s infinite;
+            color: #D9DDDC;
+            z-index: 1;
+        }
+
+        .email-input {
+            margin-top: 20px;
+            width: 300px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <h1>Welcome to my <br> Motion Detector</h1>
+    <h2>Motion in Focus: Your Gateway to Surveillance</h2>
+    <div id="scroll-arrow" onclick="scrollToTextBox()">&#9660;</div>
+
+    <!-- Email Input -->
+    <input type="email" class="email-input" id="recipientEmail" placeholder="Enter recipient email address">
+    <button onclick="checkEmailValidity()">Check Email Validity</button>
+    <p id="emailValidityResult"></p>
+
+</body>
+
+<script>
+    function scrollToTextBox() {
+        document.getElementById('recipientEmail').scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
+
+    function checkEmailValidity() {
+    var email = document.getElementById('recipientEmail').value;
+    var emailRegex = /^[^\s@]+@(gmail|hotmail|yahoo)\.com$/;
+
+    if (emailRegex.test(email)) {
+        document.getElementById('emailValidityResult').textContent = 'Email address is valid.';
+    } else {
+        document.getElementById('emailValidityResult').textContent = 'Please enter a valid email address with domain gmail.com, hotmail.com, or yahoo.com.';
+    }
+    }
+
+</script>
+
+</html>
