@@ -2,20 +2,45 @@ import cv2
 import time
 import glob
 import os
+import smtplib
+import mimetypes
+from email.message import EmailMessage
 from threading import Thread
 from flask import Flask, render_template, request, Response
+
+SENDER = "munibsmotiondetector@gmail.com"
+PASSWORD = "tfwpusgndjdapldu"
 
 app = Flask(__name__)
 
 InitialFrame = None
 StatusList = []
 count = 1
-activate_motion_detector = False
+activate_motion_detector = True  # Set to True to activate motion detector
 
 def CleanImages():
     images = glob.glob("images/*.png")
     for image in images:
         os.remove(image)
+
+def Alert(image, recipient_email):
+    Message = EmailMessage()
+    Message["Subject"] = "Motion Detected!"
+    Message.set_content("Motion has been detected by the motion detector.")
+
+    with open(image, "rb") as file:
+        content = file.read()
+
+    mime_type, _ = mimetypes.guess_type(image)
+    main_type, sub_type = mime_type.split('/')
+    Message.add_attachment(content, maintype=main_type, subtype=sub_type)
+
+    gmail = smtplib.SMTP("smtp.gmail.com", 587)
+    gmail.ehlo()
+    gmail.starttls()
+    gmail.login(SENDER, PASSWORD)
+    gmail.sendmail(SENDER, recipient_email, Message.as_string())
+    gmail.quit()
 
 def motion_detection():
     global InitialFrame
@@ -59,13 +84,11 @@ def motion_detection():
                 index = int(len(AllImages) / 2)
                 FinalImage = AllImages[index]
 
+                # Send email notification
+                Alert(FinalImage, "recipient@example.com")  # Change recipient email address as needed
+
         StatusList.append(Status)
         StatusList = StatusList[-2:]
-
-        if StatusList[0] == 1 and StatusList[1] == 0:
-            cleanThread = Thread(target=CleanImages)
-            cleanThread.daemon = True
-            cleanThread.start()
 
         key = cv2.waitKey(1)
         if key == ord("q"):
@@ -84,12 +107,6 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(motion_detection(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    global activate_motion_detector
-    activate_motion_detector = True
-    return "Motion detector activated. You will receive notifications via email."
 
 if __name__ == "__main__":
     app.run(debug=True)
