@@ -3,15 +3,9 @@ import time
 import glob
 import os
 from threading import Thread
-from flask import Flask, render_template, request, Response, jsonify
-
-# Ensure emailing module is imported correctly
-from emailing import Alert
+from flask import Flask, render_template, request, Response
 
 app = Flask(__name__)
-
-video = cv2.VideoCapture(0)
-time.sleep(1)
 
 InitialFrame = None
 StatusList = []
@@ -24,10 +18,12 @@ def CleanImages():
         os.remove(image)
 
 def motion_detection():
-    global activate_motion_detector
     global InitialFrame
     global StatusList
     global count
+
+    video = cv2.VideoCapture(0)
+    time.sleep(1)
 
     while True:
         if not activate_motion_detector:
@@ -67,22 +63,17 @@ def motion_detection():
         StatusList = StatusList[-2:]
 
         if StatusList[0] == 1 and StatusList[1] == 0:
-            EmailThread = Thread(target=Alert, args=(FinalImage,))
-            EmailThread.daemon = True
             cleanThread = Thread(target=CleanImages)
             cleanThread.daemon = True
-
-            EmailThread.start()
             cleanThread.start()
 
         key = cv2.waitKey(1)
-
         if key == ord("q"):
             break
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tbytes() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
 
     video.release()
 
@@ -97,13 +88,8 @@ def video_feed():
 @app.route('/submit', methods=['POST'])
 def submit():
     global activate_motion_detector
-
-    email = request.form['email']
-    if email:
-        activate_motion_detector = True
-        return jsonify({"message": "Motion detector activated."}), 200
-    else:
-        return jsonify({"message": "Invalid email address."}), 400
+    activate_motion_detector = True
+    return "Motion detector activated. You will receive notifications via email."
 
 if __name__ == "__main__":
     app.run(debug=True)
