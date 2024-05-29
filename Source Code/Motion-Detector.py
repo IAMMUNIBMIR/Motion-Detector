@@ -2,9 +2,11 @@ import cv2
 import time
 import glob
 import os
-from emailing import Alert
 from threading import Thread
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, redirect, url_for
+
+# Ensure emailing module is imported correctly
+from emailing import Alert
 
 app = Flask(__name__)
 
@@ -97,11 +99,11 @@ def submit():
     global activate_motion_detector
 
     email = request.form['email']
-    if email:  # Ensure email is not empty
+    if email:
         activate_motion_detector = True
-        return "Motion detector activated. You will receive notifications via email."
+        return redirect(url_for('index', activated=True))
     else:
-        return "Invalid email address."
+        return redirect(url_for('index', activated=False))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -26,7 +26,7 @@
         h2 {
             font-size: 3rem;
             font-weight: bold;
-        }  
+        }
 
         .email-input {
             margin-top: 20px;
@@ -47,7 +47,7 @@
         }
 
         #email-section {
-            margin-top: 60vh; 
+            margin-top: 60vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -68,6 +68,16 @@
             height: 100%;
         }
 
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #0F0;
+        }
+
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
@@ -79,7 +89,6 @@
                 transform: translateY(-5px);
             }
         }
-
     </style>
 </head>
 <body>
@@ -87,34 +96,33 @@
     <h2>Motion in Focus: Your Gateway to Surveillance</h2>
     <div id="scroll-arrow" onclick="scrollToEmailSection()">&#9660;</div>
 
-    <!-- New Email Section -->
     <div id="email-section">
         <h2>Enter your email address to activate the motion detector.</h2>
         <form action="/submit" method="post">
             <input type="email" class="email-input" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
             <p id="emailValidityResult"></p>
+            <button type="submit">Activate</button>
         </form>
     </div>
 
     <p>
-        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, you will receive an email notification with a picture of the detected object.</p>
+        <br><br>Once activated, the camera will monitor for any movement. <br>Each time an object enters and then exits the camera's view, 
+        you will receive an email notification with a picture of the detected object.
+
+        <br><br> To quit the motion detector at any time, press q on your keyboard <br><br> 
+        or simply close the tab.
     </p>
 
     <div id="video-container">
-        <video id="video_feed" autoplay playsinline></video>
+        <img id="video_feed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+    </div>
+
+    <!-- Message section -->
+    <div id="activationMessage" class="{% if not request.args.get('activated') %}hidden{% endif %}">
+        <p class="message">Motion detector activated. You will receive notifications via email.</p>
     </div>
 
     <script>
-        var video = document.getElementById("video_feed");
-        video.srcObject = new MediaStream();
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                video.srcObject = stream;
-            })
-            .catch(function (err) {
-                console.log("An error occurred: " + err);
-            });
-
         function scrollToEmailSection() {
             document.getElementById('email-section').scrollIntoView({
                 behavior: 'smooth'
