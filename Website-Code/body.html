@@ -114,7 +114,7 @@
     </p>
 
     <div id="video-container">
-        <img id="video_feed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+        <video id="video_feed" autoplay playsinline></video>
     </div>
 
     <!-- Message section -->
@@ -137,12 +137,26 @@
             xhr.open('POST', '/submit', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById('activationMessage').classList.remove('hidden');
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById('activationMessage').classList.remove('hidden');
+                    } else {
+                        console.error('Error:', xhr.responseText);
+                    }
                 }
             };
             xhr.send('email=' + encodeURIComponent(email));
         });
+
+        // Request access to the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                var video = document.getElementById('video_feed');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('An error occurred: ', err);
+            });
     </script>
 </body>
 </html>
