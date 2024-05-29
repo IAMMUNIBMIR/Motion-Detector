@@ -3,7 +3,7 @@ import time
 import glob
 import os
 from threading import Thread
-from flask import Flask, render_template, request, Response, redirect, url_for
+from flask import Flask, render_template, request, Response, jsonify
 
 # Ensure emailing module is imported correctly
 from emailing import Alert
@@ -82,7 +82,7 @@ def motion_detection():
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tbytes() + b'\r\n')
 
     video.release()
 
@@ -101,9 +101,9 @@ def submit():
     email = request.form['email']
     if email:
         activate_motion_detector = True
-        return redirect(url_for('index', activated=True))
+        return jsonify({"message": "Motion detector activated."}), 200
     else:
-        return redirect(url_for('index', activated=False))
+        return jsonify({"message": "Invalid email address."}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
