@@ -98,7 +98,7 @@
 
     <div id="email-section">
         <h2>Enter your email address to activate the motion detector.</h2>
-        <form id="email-form">
+        <form id="email-form" onsubmit="submitForm(event)">
             <input type="email" class="email-input" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
             <p id="emailValidityResult"></p>
             <button type="submit">Activate</button>
@@ -129,9 +129,8 @@
             });
         }
 
-        document.getElementById('email-form').addEventListener('submit', function(event) {
+        function submitForm(event) {
             event.preventDefault();
-
             var email = document.getElementById('recipientEmail').value;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/submit', true);
@@ -146,9 +145,8 @@
                 }
             };
             xhr.send('email=' + encodeURIComponent(email));
-        });
+        }
 
-        // Request access to the camera
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
                 var video = document.getElementById('video_feed');
