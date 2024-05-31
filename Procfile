@@ -1,1 +1,1 @@
-gunicorn -b :$PORT app:app
+gunicorn -b :$PORT Motion-Detector:app
