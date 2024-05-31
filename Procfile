@@ -1,1 +1,1 @@
-web: python Motion-Detector.py
+web: gunicorn -b :$PORT Motion-Detector:app
