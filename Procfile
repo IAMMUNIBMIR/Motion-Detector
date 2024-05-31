@@ -1,1 +1,1 @@
-gunicorn -b :$PORT Motion-Detector:app
+gunicorn -b :$PORT "Source Code.Motion-Detector:app"
