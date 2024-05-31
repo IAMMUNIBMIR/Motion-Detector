@@ -1,1 +1,1 @@
-python Motion-Detector.py
+web: python Motion-Detector.py
