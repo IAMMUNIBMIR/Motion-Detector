@@ -28,7 +28,7 @@ def CleanImages():
         os.remove(image)
 
 def generate_frames():
-    global InitialFrame, StatusList, count
+    global InitialFrame, StatusList, count, recipient_email
 
     while True:
         Status = False

@@ -91,7 +91,7 @@
         To quit the motion detector at any time, press 'q' on your keyboard or simply close the tab.
     </p>
 
-    <div id="video-container" class="hidden">
+    <div id="video-container">
         <video id="video_feed" autoplay playsinline></video>
     </div>
 
@@ -105,8 +105,7 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         document.getElementById('activationMessage').classList.remove('hidden');
-                        document.getElementById('video-container').classList.remove('hidden');
-                        startVideo();
+                        startMotionDetection();
                     } else {
                         console.error('Error:', xhr.responseText);
                     }
@@ -115,10 +114,27 @@
             xhr.send('email=' + encodeURIComponent(email));
         });
 
-        function startVideo() {
+        function startMotionDetection() {
             var video = document.getElementById('video_feed');
-            video.src = "/video_feed";
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function(err) {
+                    console.error('An error occurred: ', err);
+                });
         }
+
+        window.onload = function() {
+            var video = document.getElementById('video_feed');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function(err) {
+                    console.error('An error occurred: ', err);
+                });
+        };
     </script>
 </body>
 </html>
