@@ -82,16 +82,17 @@ def generate_frames():
 def index():
     return render_template('index.html')
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    email = request.form.get('email')
-    # Pass the email address to emailing.py
-    Alert(email)
-    return 'Email submitted successfully'
-
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    if request.method == 'POST':
+        email = request.form['email']
+        # You can add additional logic here to handle the email submission
+        print("Received email:", email)  # Just for testing purposes
+        return "Email submitted successfully"
 
 if __name__ == '__main__':
     app.run(debug=True)
