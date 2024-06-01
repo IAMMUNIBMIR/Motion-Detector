@@ -85,9 +85,7 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
-    if recipient_email:
-        return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-    return "Email not set", 403
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/submit', methods=['POST'])
 def submit():

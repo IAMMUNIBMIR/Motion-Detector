@@ -116,14 +116,8 @@
         });
 
         function startVideo() {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    var video = document.getElementById('video_feed');
-                    video.srcObject = stream;
-                })
-                .catch(function(err) {
-                    console.error('An error occurred: ', err);
-                });
+            var video = document.getElementById('video_feed');
+            video.src = "/video_feed";
         }
     </script>
 </body>
