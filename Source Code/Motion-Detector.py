@@ -4,9 +4,7 @@ import glob
 import os
 from flask import Flask, render_template, Response, request
 from threading import Thread
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from emailing import Alert
+from emailing import send_email
 
 app = Flask(__name__, template_folder='../Website-Code')
 
@@ -21,7 +19,7 @@ InitialFrame = None
 StatusList = []
 count = 1
 
-def CleanImages():
+def clean_images():
     images = glob.glob("static/images/*.png")
     for image in images:
         os.remove(image)
@@ -65,13 +63,13 @@ def generate_frames():
         StatusList = StatusList[-2:]
 
         if StatusList[0] == 1 and StatusList[1] == 0:
-            EmailThread = Thread(target=Alert, args=(FinalImage,))
-            EmailThread.daemon = True
-            cleanThread = Thread(target=CleanImages)
-            cleanThread.daemon = True
+            email_thread = Thread(target=send_email, args=(FinalImage,))
+            email_thread.daemon = True
+            clean_thread = Thread(target=clean_images)
+            clean_thread.daemon = True
 
-            EmailThread.start()
-            cleanThread.start()
+            email_thread.start()
+            clean_thread.start()
 
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
@@ -90,7 +88,8 @@ def video_feed():
 def submit():
     email = request.form.get('email')
     print("Received email:", email)
-    # You can process the email here as needed
+    # Add email validation here if needed
+    # Process the email as needed
     return "Email submitted successfully"
 
 if __name__ == '__main__':
