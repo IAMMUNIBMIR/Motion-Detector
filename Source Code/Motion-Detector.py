@@ -7,6 +7,7 @@ import os
 from threading import Thread
 import sys
 import logging
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
 # Configure logging
