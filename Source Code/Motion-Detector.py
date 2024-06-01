@@ -88,11 +88,10 @@ def video_feed():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    if request.method == 'POST':
-        email = request.form['email']
-        # You can add additional logic here to handle the email submission
-        print("Received email:", email)  # Just for testing purposes
-        return "Email submitted successfully"
+    email = request.form.get('email')
+    print("Received email:", email)
+    # You can process the email here as needed
+    return "Email submitted successfully"
 
 if __name__ == '__main__':
     app.run(debug=True)
