@@ -85,6 +85,8 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
+    if email_recipient is None:
+        return "No email submitted", 400
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/submit', methods=['POST'])
@@ -92,7 +94,6 @@ def submit():
     global email_recipient
     email_recipient = request.form.get('email')
     print("Received email:", email_recipient)
-    # You can process the email here as needed
     return "Email submitted successfully"
 
 if __name__ == '__main__':
