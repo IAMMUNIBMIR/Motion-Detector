@@ -4,8 +4,6 @@ import glob
 import os
 from flask import Flask, render_template, Response
 from threading import Thread
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
 app = Flask(__name__, template_folder='../Website-Code')
