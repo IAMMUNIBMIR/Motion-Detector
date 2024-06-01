@@ -1,14 +1,12 @@
+from flask import Flask, render_template, Response
+from flask_cors import CORS
 import cv2
 import time
 import glob
 import os
-from flask import Flask, render_template, Response
 from threading import Thread
 import sys
 import logging
-
-# Import the Alert function from the emailing module
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
 # Configure logging
@@ -16,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Initialize Flask app
 app = Flask(__name__, template_folder='../Website-Code')
+CORS(app, origins=["https://munibsmotiondetector.netlify.app"])  # Replace with your Netlify domain
 
 # Open the video capture device
 video = cv2.VideoCapture(0)
