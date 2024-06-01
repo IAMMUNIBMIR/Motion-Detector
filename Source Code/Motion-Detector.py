@@ -4,8 +4,6 @@ import glob
 import os
 from flask import Flask, render_template, Response
 from threading import Thread
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
 app = Flask(__name__, template_folder='../Website-Code')
@@ -29,17 +27,31 @@ def generate_frames():
     while True:
         Status = False
         check, frame = video.read()
+        
+        if not check:
+            print("Failed to capture frame")
+            continue
+        
         grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
 
         if InitialFrame is None:
             InitialFrame = grayFrameBlur
-
+            continue
+        
         FrameDiff = cv2.absdiff(InitialFrame, grayFrameBlur)
         ThreshFrame = cv2.threshold(FrameDiff, 60, 255, cv2.THRESH_BINARY)[1]
         DilatedFrame = cv2.dilate(ThreshFrame, None, iterations=2)
 
+        # Display intermediate frames for debugging
+        cv2.imshow("Gray Frame", grayFrame)
+        cv2.imshow("Blurred Frame", grayFrameBlur)
+        cv2.imshow("Frame Difference", FrameDiff)
+        cv2.imshow("Threshold Frame", ThreshFrame)
+        cv2.imshow("Dilated Frame", DilatedFrame)
+
         contours, _ = cv2.findContours(DilatedFrame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        print(f"Number of contours found: {len(contours)}")
 
         for contour in contours:
             if cv2.contourArea(contour) < 5000:
@@ -47,6 +59,7 @@ def generate_frames():
 
             x, y, width, height = cv2.boundingRect(contour)
             rectangle = cv2.rectangle(frame, (x, y), (x + width, y + height), (0, 255, 0), 3)
+            print(f"Motion detected: {rectangle.any()}")
 
             if rectangle.any():
                 Status = True
@@ -61,8 +74,10 @@ def generate_frames():
 
         StatusList.append(Status)
         StatusList = StatusList[-2:]
+        print(f"StatusList: {StatusList}")
 
         if motion_detected and StatusList[0] == 1 and StatusList[1] == 0:
+            print("Motion ended, sending alert...")
             EmailThread = Thread(target=Alert, args=(FinalImage,))
             EmailThread.daemon = True
             cleanThread = Thread(target=CleanImages)
