@@ -5,81 +5,96 @@ import os
 from flask import Flask, render_template, Response
 from threading import Thread
 import sys
+import logging
+
+# Import the Alert function from the emailing module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Initialize Flask app
 app = Flask(__name__, template_folder='../Website-Code')
 
+# Open the video capture device
 video = cv2.VideoCapture(0)
+if not video.isOpened():
+    logging.error("Failed to open video capture")
+else:
+    logging.info("Video capture opened successfully")
+
+# Delay to allow camera to initialize
 time.sleep(1)
 
+# Initialize variables
 InitialFrame = None
 StatusList = []
 count = 1
 motion_detected = False
 
+# Function to clean up images
 def CleanImages():
-    images = glob.glob("static/images/*.png")
+    images = glob.glob("../images/*.png")  # Use the relative path to the images folder
     for image in images:
         os.remove(image)
+    logging.info("Cleaned up images")
 
+# Generator function to generate frames
 def generate_frames():
     global InitialFrame, StatusList, count, motion_detected
 
     while True:
         Status = False
         check, frame = video.read()
-        
+
         if not check:
-            print("Failed to capture frame")
+            logging.error("Failed to capture frame")
             continue
-        
+
         grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
 
         if InitialFrame is None:
             InitialFrame = grayFrameBlur
+            logging.debug("Set initial frame")
             continue
-        
+
         FrameDiff = cv2.absdiff(InitialFrame, grayFrameBlur)
         ThreshFrame = cv2.threshold(FrameDiff, 60, 255, cv2.THRESH_BINARY)[1]
         DilatedFrame = cv2.dilate(ThreshFrame, None, iterations=2)
 
-        # Display intermediate frames for debugging
-        cv2.imshow("Gray Frame", grayFrame)
-        cv2.imshow("Blurred Frame", grayFrameBlur)
-        cv2.imshow("Frame Difference", FrameDiff)
-        cv2.imshow("Threshold Frame", ThreshFrame)
-        cv2.imshow("Dilated Frame", DilatedFrame)
-
         contours, _ = cv2.findContours(DilatedFrame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        print(f"Number of contours found: {len(contours)}")
+        logging.debug(f"Number of contours found: {len(contours)}")
 
         for contour in contours:
-            if cv2.contourArea(contour) < 5000:
+            contour_area = cv2.contourArea(contour)
+            logging.debug(f"Contour area: {contour_area}")
+            if contour_area < 5000:
                 continue
 
             x, y, width, height = cv2.boundingRect(contour)
             rectangle = cv2.rectangle(frame, (x, y), (x + width, y + height), (0, 255, 0), 3)
-            print(f"Motion detected: {rectangle.any()}")
+            logging.debug(f"Motion detected: {rectangle.any()}")
 
             if rectangle.any():
                 Status = True
                 motion_detected = True
-                image_path = f"static/images/{count}.png"
+                image_path = f"../images/{count}.png"  # Use the relative path to the images folder
                 cv2.imwrite(image_path, frame)
                 count += 1
+                logging.info(f"Saved image {image_path}")
 
-                AllImages = glob.glob("static/images/*.png")
+                AllImages = glob.glob("../images/*.png")  # Use the relative path to the images folder
                 index = int(len(AllImages) / 2)
                 FinalImage = AllImages[index]
 
         StatusList.append(Status)
         StatusList = StatusList[-2:]
-        print(f"StatusList: {StatusList}")
+        logging.debug(f"StatusList: {StatusList}")
 
         if motion_detected and StatusList[0] == 1 and StatusList[1] == 0:
-            print("Motion ended, sending alert...")
+            logging.info("Motion ended, sending alert...")
             EmailThread = Thread(target=Alert, args=(FinalImage,))
             EmailThread.daemon = True
             cleanThread = Thread(target=CleanImages)
@@ -93,13 +108,16 @@ def generate_frames():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+# Route for the homepage
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Route for the video feed
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+# Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
