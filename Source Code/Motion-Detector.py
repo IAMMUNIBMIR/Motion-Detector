@@ -4,6 +4,8 @@ import glob
 import os
 from flask import Flask, render_template, Response, request
 from threading import Thread
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import send_email
 
 app = Flask(__name__, template_folder='../Website-Code')
