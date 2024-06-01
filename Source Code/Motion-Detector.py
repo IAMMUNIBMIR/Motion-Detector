@@ -8,7 +8,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../Website-Code')
 
 # Create directory for storing images if it doesn't exist
 if not os.path.exists('static/images'):
@@ -86,5 +86,5 @@ def index():
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+if __name__ == '__main__':
+    app.run(debug=True)
