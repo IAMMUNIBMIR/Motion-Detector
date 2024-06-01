@@ -5,17 +5,17 @@ from email.message import EmailMessage
 SENDER = "munibsmotiondetector@gmail.com"
 PASSWORD = "tfwpusgndjdapldu"
 
-def send_email(image, recipient):
+def send_email(recipient_email, image_path):
     Message = EmailMessage()
     Message["Subject"] = "New customer just showed up"
     Message["From"] = SENDER
-    Message["To"] = recipient
+    Message["To"] = recipient_email
     Message.set_content("Hey, we just saw a new customer")
 
-    with open(image, "rb") as file:
+    with open(image_path, "rb") as file:
         content = file.read()
 
-    mime_type, _ = mimetypes.guess_type(image)
+    mime_type, _ = mimetypes.guess_type(image_path)
     main_type, sub_type = mime_type.split('/')
     Message.add_attachment(content, maintype=main_type, subtype=sub_type)
 
