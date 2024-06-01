@@ -56,18 +56,6 @@
         .hidden {
             display: none;
         }
-
-        input[type="email"] {
-            width: 300px;
-            padding: 10px;
-            font-size: 1rem;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -90,8 +78,8 @@
         To quit the motion detector at any time, press 'q' on your keyboard or simply close the tab.
     </p>
 
-    <div id="video-container" class="hidden">
-        <img id="video_feed" src="" alt="Video Feed">
+    <div id="video-container">
+        <video id="video_feed" autoplay playsinline></video>
     </div>
 
     <script>
@@ -104,8 +92,6 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         document.getElementById('activationMessage').classList.remove('hidden');
-                        document.getElementById('video-container').classList.remove('hidden');
-                        document.getElementById('video_feed').src = '/video_feed';
                     } else {
                         console.error('Error:', xhr.responseText);
                     }
@@ -113,6 +99,15 @@
             };
             xhr.send('email=' + encodeURIComponent(email));
         });
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                var video = document.getElementById('video_feed');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('An error occurred: ', err);
+            });
     </script>
 </body>
 </html>
