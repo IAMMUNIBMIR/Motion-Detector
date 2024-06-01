@@ -5,7 +5,7 @@ from email.message import EmailMessage
 SENDER = "munibsmotiondetector@gmail.com"
 PASSWORD = "tfwpusgndjdapldu"
 
-def send_email(recipient_email, image_path):
+def Alert(recipient_email, image_path):
     Message = EmailMessage()
     Message["Subject"] = "New customer just showed up"
     Message["From"] = SENDER
