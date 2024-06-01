@@ -2,7 +2,7 @@ import cv2
 import time
 import glob
 import os
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from threading import Thread
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -81,6 +81,13 @@ def generate_frames():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    email = request.form.get('email')
+    # Pass the email address to emailing.py
+    Alert(email)
+    return 'Email submitted successfully'
 
 @app.route('/video_feed')
 def video_feed():
