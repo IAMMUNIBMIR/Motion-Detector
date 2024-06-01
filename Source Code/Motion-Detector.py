@@ -28,7 +28,7 @@ def CleanImages():
         os.remove(image)
 
 def generate_frames():
-    global InitialFrame, StatusList, count, recipient_email
+    global InitialFrame, StatusList, count
 
     while True:
         Status = False
@@ -38,46 +38,34 @@ def generate_frames():
 
         if InitialFrame is None:
             InitialFrame = grayFrameBlur
+            continue  # Skip processing the first frame to set the initial background
 
         FrameDiff = cv2.absdiff(InitialFrame, grayFrameBlur)
-        ThreshFrame = cv2.threshold(FrameDiff, 60, 255, cv2.THRESH_BINARY)[1]
+        ThreshFrame = cv2.threshold(FrameDiff, 30, 255, cv2.THRESH_BINARY)[1]  # Adjust threshold as needed
         DilatedFrame = cv2.dilate(ThreshFrame, None, iterations=2)
 
-        contours, _ = cv2.findContours(DilatedFrame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(DilatedFrame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         for contour in contours:
             if cv2.contourArea(contour) < 5000:
                 continue
 
             x, y, width, height = cv2.boundingRect(contour)
-            rectangle = cv2.rectangle(frame, (x, y), (x + width, y + height), (0, 255, 0), 3)
-
-            if rectangle.any():
-                Status = True
-                image_path = f"static/images/{count}.png"
-                cv2.imwrite(image_path, frame)
-                count += 1
-
-                AllImages = glob.glob("static/images/*.png")
-                index = int(len(AllImages) / 2)
-                FinalImage = AllImages[index]
+            cv2.rectangle(frame, (x, y), (x + width, y + height), (0, 255, 0), 3)  # Draw green rectangle around detected motion
+            Status = True
 
         StatusList.append(Status)
         StatusList = StatusList[-2:]
 
         if StatusList[0] == 1 and StatusList[1] == 0 and recipient_email:
-            EmailThread = Thread(target=send_email, args=(recipient_email, FinalImage))
-            EmailThread.daemon = True
-            cleanThread = Thread(target=CleanImages)
-            cleanThread.daemon = True
-
+            EmailThread = Thread(target=send_email, args=(recipient_email, "static/images/{}.png".format(count)))
             EmailThread.start()
-            cleanThread.start()
 
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
 
 @app.route('/')
 def index():

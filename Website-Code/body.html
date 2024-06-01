@@ -105,7 +105,6 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         document.getElementById('activationMessage').classList.remove('hidden');
-                        startMotionDetection();
                     } else {
                         console.error('Error:', xhr.responseText);
                     }
@@ -114,27 +113,14 @@
             xhr.send('email=' + encodeURIComponent(email));
         });
 
-        function startMotionDetection() {
-            var video = document.getElementById('video_feed');
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    video.srcObject = stream;
-                })
-                .catch(function(err) {
-                    console.error('An error occurred: ', err);
-                });
-        }
-
-        window.onload = function() {
-            var video = document.getElementById('video_feed');
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    video.srcObject = stream;
-                })
-                .catch(function(err) {
-                    console.error('An error occurred: ', err);
-                });
-        };
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                var video = document.getElementById('video_feed');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('An error occurred: ', err);
+            });
     </script>
 </body>
 </html>
