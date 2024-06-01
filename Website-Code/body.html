@@ -56,6 +56,18 @@
         .hidden {
             display: none;
         }
+
+        input[type="email"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -79,7 +91,7 @@
     </p>
 
     <div id="video-container" class="hidden">
-        <img id="video_feed" src="{{ url_for('video_feed') }}">
+        <img id="video_feed" src="" alt="Video Feed">
     </div>
 
     <script>
@@ -93,6 +105,7 @@
                     if (xhr.status === 200) {
                         document.getElementById('activationMessage').classList.remove('hidden');
                         document.getElementById('video-container').classList.remove('hidden');
+                        document.getElementById('video_feed').src = '/video_feed';
                     } else {
                         console.error('Error:', xhr.responseText);
                     }
