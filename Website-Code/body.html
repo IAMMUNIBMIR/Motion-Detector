@@ -97,9 +97,9 @@
 
     <script>
         document.getElementById('email-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting the traditional way
+            event.preventDefault(); // Prevent the default form submission
             var email = document.getElementById('recipientEmail').value;
-            fetch('/submit', {
+            fetch('https://motion-detector.onrender.com/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -117,7 +117,22 @@
         });
 
         document.getElementById('activateButton').addEventListener('click', function() {
-            document.getElementById('email-form').submit();
+            var email = document.getElementById('recipientEmail').value;
+            fetch('https://motion-detector.onrender.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'email=' + encodeURIComponent(email)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('activationMessage').classList.remove('hidden');
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
 
         // Request access to the camera
