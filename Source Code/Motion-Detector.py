@@ -1,12 +1,13 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, request, render_template, Response
 from flask_cors import CORS
 import cv2
 import time
 import glob
 import os
 from threading import Thread
-import sys
 import logging
+import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert
 
@@ -125,13 +126,9 @@ def video_feed():
 # Endpoint to handle email submission
 @app.route('/submit', methods=['POST'])
 def submit_email():
-    email = request.form.get('email')  # Get the email from the request data
-    # Perform any necessary logic with the email (e.g., activate motion detector)
-    # Here you can add logic to activate the motion detector based on the received email
-    # For example:
-    logging.info(f"Received email for activation: {email}")
-    # Return a response indicating success
-    return 'Email submitted successfully'
+    email = request.form['email']
+    logging.info(f'Received email: {email}')
+    return 'Email received', 200
 
 # Run the Flask app
 if __name__ == '__main__':
