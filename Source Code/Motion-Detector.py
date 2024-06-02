@@ -68,8 +68,16 @@ def process_frame(frame):
             logging.info(f"Saved image {image_path}")
             latest_image_path = image_path
 
+    if motion_detected:
+        logging.info("Motion detected, sending alert...")
+        if recipient_email:
+            # Call the Alert function with recipient email and image path
+            Alert(recipient_email, latest_image_path)
+        motion_detected = False  # Reset motion detection flag
+
     if not motion_detected:
         InitialFrame = grayFrameBlur
+
 
 # Route to process frames
 @app.route('/process_frame', methods=['POST'])
