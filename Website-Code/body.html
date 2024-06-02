@@ -92,45 +92,42 @@
     </p>
 
     <div id="video-container">
-        <img id="video_feed" alt="Video Feed">
+        <video id="video_feed" autoplay playsinline></video>
     </div>
 
     <script>
         document.getElementById('activateButton').addEventListener('click', function() {
             var email = document.getElementById('recipientEmail').value;
-            fetch('https://motion-detector.onrender.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'email=' + encodeURIComponent(email)
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('activationMessage').classList.remove('hidden');
-                } else {
-                    console.error('Error:', response.statusText);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById('activationMessage').classList.remove('hidden');
+                    } else {
+                        console.error('Error:', xhr.responseText);
+                    }
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            };
+            xhr.send('email=' + encodeURIComponent(email));
         });
 
-        function fetchVideoFeed() {
-            fetch('https://motion-detector.onrender.com/video_feed')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.blob();
+        // Request access to the camera
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    var video = document.getElementById('video_feed');
+                    video.srcObject = stream;
                 })
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    document.getElementById('video_feed').src = url;
-                })
-                .catch(error => console.error('Error:', error));
+                .catch(function(err) {
+                    console.error('An error occurred: ', err);
+                    alert('Camera access denied or not available.');
+                });
         }
 
-        fetchVideoFeed();
+        // Start the camera on page load
+        window.onload = startCamera;
     </script>
 </body>
 </html>
