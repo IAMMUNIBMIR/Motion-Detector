@@ -71,8 +71,10 @@ def process_frame(frame):
     if motion_detected:
         logging.info("Motion detected, sending alert...")
         if recipient_email:
+            logging.info("Process started, sending alert...")
             # Call the Alert function with recipient email and image path
             Alert(recipient_email, latest_image_path)
+            logging.info("Process finished, alert sent")
         motion_detected = False  # Reset motion detection flag
 
     if not motion_detected:
