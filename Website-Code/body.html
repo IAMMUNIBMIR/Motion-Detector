@@ -98,9 +98,7 @@
     <script>
         document.getElementById('email-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting the traditional way
-            console.log("Form submission intercepted"); // Debugging statement
             var email = document.getElementById('recipientEmail').value;
-            console.log("Email entered: " + email); // Debugging statement
             fetch('/submit', {
                 method: 'POST',
                 headers: {
@@ -110,13 +108,16 @@
             })
             .then(response => {
                 if (response.ok) {
-                    console.log("Email submitted successfully"); // Debugging statement
                     document.getElementById('activationMessage').classList.remove('hidden');
                 } else {
                     console.error('Error:', response.statusText);
                 }
             })
             .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('activateButton').addEventListener('click', function() {
+            document.getElementById('email-form').submit();
         });
 
         // Request access to the camera
