@@ -119,6 +119,29 @@
                 .then(function(stream) {
                     var video = document.getElementById('video_feed');
                     video.srcObject = stream;
+
+                    // Send video frames to the backend
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    function sendFrame() {
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                            const frame = canvas.toDataURL('image/jpeg');
+                            fetch('https://motion-detector.onrender.com/process_frame', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ frame: frame })
+                            }).catch(error => console.error('Error sending frame:', error));
+                        }
+                        requestAnimationFrame(sendFrame);
+                    }
+                    sendFrame();
                 })
                 .catch(function(err) {
                     console.error('An error occurred: ', err);
