@@ -30,7 +30,7 @@ recipient_email = None
 
 # Function to clean up images
 def CleanImages():
-    images = glob.glob("../images/*.png")  # Use the relative path to the images folder
+    images = glob.glob("./images/*.png")  # Use the relative path to the images folder
     for image in images:
         os.remove(image)
     logging.info("Cleaned up images")
@@ -74,12 +74,12 @@ def process_frame(frame):
         if rectangle.any():
             Status = True
             motion_detected = True
-            image_path = f"../images/{count}.png"  # Use the relative path to the images folder
+            image_path = f"./images/{count}.png"  # Use the relative path to the images folder
             cv2.imwrite(image_path, frame)
             count += 1
             logging.info(f"Saved image {image_path}")
 
-            AllImages = glob.glob("../images/*.png")  # Use the relative path to the images folder
+            AllImages = glob.glob("./images/*.png")  # Use the relative path to the images folder
             if AllImages:
                 index = int(len(AllImages) / 2)
                 FinalImage = AllImages[index]
