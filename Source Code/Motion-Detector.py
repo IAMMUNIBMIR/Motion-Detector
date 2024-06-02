@@ -81,7 +81,7 @@ def process_frame(frame):
 
             AllImages = glob.glob("./images/*.png")  # Use the relative path to the images folder
             if AllImages:
-                index = int(len(AllImages) / 2)
+                index = int(len(AllImages) // 2)
                 FinalImage = AllImages[index]
             else:
                 FinalImage = None
@@ -90,7 +90,7 @@ def process_frame(frame):
     StatusList = StatusList[-2:]
     logging.debug(f"StatusList: {StatusList}")
 
-    if motion_detected and StatusList[0] == 1 and StatusList[1] == 0 and FinalImage:
+    if StatusList[0] == 1 and StatusList[1] == 0 and FinalImage:
         logging.info("Motion ended, sending alert...")
         if recipient_email:
             # Call the Alert function with recipient email and image path
