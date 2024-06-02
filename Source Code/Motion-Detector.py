@@ -38,7 +38,7 @@ def process_frame(frame):
     img_data = base64.b64decode(frame.split(',')[1])
     np_img = np.frombuffer(img_data, np.uint8)
     frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-
+    count = 0
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
 
@@ -63,7 +63,8 @@ def process_frame(frame):
 
         if rectangle.any():
             motion_detected = True
-            image_path = f"./images/{time.time()}.png"
+            count += 1
+            image_path = f"./images/{count}.png"
             cv2.imwrite(image_path, frame)
             logging.info(f"Saved image {image_path}")
             latest_image_path = image_path
