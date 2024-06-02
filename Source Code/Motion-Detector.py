@@ -32,6 +32,7 @@ InitialFrame = None
 StatusList = []
 count = 1
 motion_detected = False
+FinalImage = None  # Initialize FinalImage to None
 
 # Function to clean up images
 def CleanImages():
@@ -42,7 +43,7 @@ def CleanImages():
 
 # Generator function to generate frames
 def generate_frames():
-    global InitialFrame, StatusList, count, motion_detected
+    global InitialFrame, StatusList, count, motion_detected, FinalImage
 
     while True:
         Status = False
@@ -86,22 +87,26 @@ def generate_frames():
                 logging.info(f"Saved image {image_path}")
 
                 AllImages = glob.glob("../images/*.png")  # Use the relative path to the images folder
-                index = int(len(AllImages) / 2)
-                FinalImage = AllImages[index]
+                if AllImages:
+                    index = int(len(AllImages) / 2)
+                    FinalImage = AllImages[index]
 
         StatusList.append(Status)
         StatusList = StatusList[-2:]
         logging.debug(f"StatusList: {StatusList}")
 
         if motion_detected and StatusList[0] == 1 and StatusList[1] == 0:
-            logging.info("Motion ended, sending alert...")
-            EmailThread = Thread(target=Alert, args=(FinalImage,))
-            EmailThread.daemon = True
-            cleanThread = Thread(target=CleanImages)
-            cleanThread.daemon = True
+            if FinalImage:  # Only proceed if FinalImage is assigned
+                logging.info("Motion ended, sending alert...")
+                EmailThread = Thread(target=Alert, args=(FinalImage,))
+                EmailThread.daemon = True
+                cleanThread = Thread(target=CleanImages)
+                cleanThread.daemon = True
 
-            EmailThread.start()
-            cleanThread.start()
+                EmailThread.start()
+                cleanThread.start()
+            else:
+                logging.warning("No image to send in alert. Skipping email.")
 
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
