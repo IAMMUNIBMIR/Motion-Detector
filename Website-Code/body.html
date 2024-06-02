@@ -132,14 +132,15 @@
                             canvas.height = video.videoHeight;
                             context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-                            const frame = canvas.toDataURL('image/jpeg');
-                            fetch('/process_frame', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ frame: frame })
-                            }).catch(error => console.error('Error sending frame:', error));
+                            canvas.toBlob(function(blob) {
+                                const formData = new FormData();
+                                formData.append('frame', blob);
+    
+                                fetch('/process_frame', {
+                                    method: 'POST',
+                                    body: formData
+                                }).catch(error => console.error('Error sending frame:', error));
+                            }, 'image/jpeg');
                         }
                         requestAnimationFrame(sendFrame);
                     }
