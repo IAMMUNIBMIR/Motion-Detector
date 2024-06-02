@@ -98,11 +98,9 @@
     <script>
         document.getElementById('activateButton').addEventListener('click', function() {
             var email = document.getElementById('recipientEmail').value;
-            var formData = new FormData();
-            formData.append('email', email);
-    
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
@@ -112,49 +110,24 @@
                     }
                 }
             };
-            xhr.send(formData);
+            xhr.send('email=' + encodeURIComponent(email));
         });
-    
+
         // Request access to the camera
         function startCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function(stream) {
                     var video = document.getElementById('video_feed');
                     video.srcObject = stream;
-    
-                    // Send video frames to the backend
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-    
-                    function sendFrame() {
-                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
-                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-                            canvas.toBlob(function(blob) {
-                                const formData = new FormData();
-                                formData.append('frame', blob);
-    
-                                fetch('/process_frame', {
-                                    method: 'POST',
-                                    body: formData
-                                }).catch(error => console.error('Error sending frame:', error));
-                            }, 'image/jpeg');
-                        }
-                        requestAnimationFrame(sendFrame);
-                    }
-                    sendFrame();
                 })
                 .catch(function(err) {
                     console.error('An error occurred: ', err);
                     alert('Camera access denied or not available.');
                 });
         }
-    
+
         // Start the camera on page load
         window.onload = startCamera;
     </script>
-    
 </body>
 </html>
