@@ -116,25 +116,6 @@
             .catch(error => console.error('Error:', error));
         });
 
-        document.getElementById('activateButton').addEventListener('click', function() {
-            var email = document.getElementById('recipientEmail').value;
-            fetch('https://motion-detector.onrender.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'email=' + encodeURIComponent(email)
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('activationMessage').classList.remove('hidden');
-                } else {
-                    console.error('Error:', response.statusText);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-
         // Request access to the camera
         function startCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
