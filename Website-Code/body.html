@@ -98,19 +98,25 @@
     <script>
         document.getElementById('activateButton').addEventListener('click', function() {
             var email = document.getElementById('recipientEmail').value;
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/submit', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        document.getElementById('activationMessage').classList.remove('hidden');
-                    } else {
-                        console.error('Error:', xhr.responseText);
-                    }
+
+            // Send a POST request with the email as JSON data in the request body
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('activationMessage').classList.remove('hidden');
+                } else {
+                    console.error('Error:', response.statusText);
                 }
-            };
-            xhr.send('email=' + encodeURIComponent(email));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
 
         // Request access to the camera
@@ -131,13 +137,14 @@
                             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                             const frame = canvas.toDataURL('image/jpeg');
-                            fetch('https://motion-detector.onrender.com/process_frame', {
+                            fetch('/process_frame', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({ frame: frame })
-                            }).catch(error => console.error('Error sending frame:', error));
+                            })
+                            .catch(error => console.error('Error sending frame:', error));
                         }
                         requestAnimationFrame(sendFrame);
                     }
