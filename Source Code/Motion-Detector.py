@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from flask_cors import CORS
 import cv2
 import time
@@ -121,6 +121,17 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Endpoint to handle email submission
+@app.route('/submit', methods=['POST'])
+def submit_email():
+    email = request.form.get('email')  # Get the email from the request data
+    # Perform any necessary logic with the email (e.g., activate motion detector)
+    # Here you can add logic to activate the motion detector based on the received email
+    # For example:
+    logging.info(f"Received email for activation: {email}")
+    # Return a response indicating success
+    return 'Email submitted successfully'
 
 # Run the Flask app
 if __name__ == '__main__':
