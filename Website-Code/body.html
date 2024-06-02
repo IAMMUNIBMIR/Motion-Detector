@@ -79,7 +79,7 @@
         <h2>Enter your email address to activate the motion detector.</h2>
         <form id="email-form">
             <input type="email" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
-            <button type="button" id="activateButton">Activate</button>
+            <button type="submit" id="activateButton">Activate</button>
         </form>
         <p id="activationMessage" class="hidden">Motion detector activated. You will receive notifications via email.</p>
     </div>
@@ -96,36 +96,22 @@
     </div>
 
     <script>
-        var recipientEmail = '';
-
-        function sendEmail() {
-            recipientEmail = document.getElementById('recipientEmail').value;
-            const emailData = JSON.stringify({ email: recipientEmail });
-
-            fetch('https://motion-detector.onrender.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: emailData
-            }).then(response => {
-                if (response.ok) {
-                    document.getElementById('activationMessage').classList.remove('hidden');
-                } else {
-                    console.error('Error:', response.statusText);
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        document.getElementById('activateButton').addEventListener('click', function() {
-            sendEmail();
-        });
-
         document.getElementById('email-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            sendEmail();
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            var email = document.getElementById('recipientEmail').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById('activationMessage').classList.remove('hidden');
+                    } else {
+                        console.error('Error:', xhr.responseText);
+                    }
+                }
+            };
+            xhr.send('email=' + encodeURIComponent(email));
         });
 
         // Request access to the camera
