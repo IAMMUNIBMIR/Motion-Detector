@@ -94,7 +94,7 @@ def submit_email():
     global recipient_email
     recipient_email = request.form['email']
     logging.info(f"Recipient email set to: {recipient_email}")
-    return 'Email received', 200, recipient_email
+    return 'Email received', 200
 
 # Route for the homepage
 @app.route('/')

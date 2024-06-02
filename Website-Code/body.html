@@ -116,10 +116,6 @@
             .catch(error => console.error('Error:', error));
         });
 
-        document.getElementById('activateButton').addEventListener('click', function() {
-            document.getElementById('email-form').submit();
-        });
-
         // Request access to the camera
         function startCamera() {
             navigator.mediaDevices.getUserMedia({ video: true })
