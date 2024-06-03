@@ -74,7 +74,7 @@ def process_frame(frame):
         if recipient_email:
             logging.info("Process started, sending alert...")
             # Get the latest saved image
-            latest_image_path = os.path.join("../images/", f"image{count}.png")
+            latest_image_path = os.path.join("../images/", f"image{count-1}.png")
             if os.path.exists(latest_image_path):
                 # Call the Alert function with recipient email and latest image path
                 Alert(recipient_email, latest_image_path)
