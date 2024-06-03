@@ -14,7 +14,9 @@ from emailing import Alert  # Import the Alert function
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__)
+# Specify the template folder location
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Website Code'))
+app = Flask(__name__, template_folder=template_dir)
 CORS(app, origins=["*"])  # Allow all origins for debugging, be more restrictive in production
 
 # Initialize variables
@@ -87,7 +89,6 @@ def process_frame(frame):
 
     if not motion_detected:
         InitialFrame = grayFrameBlur
-
 
 # Route to process frames
 @app.route('/process_frame', methods=['POST'])
