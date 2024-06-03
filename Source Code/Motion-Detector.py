@@ -1,11 +1,10 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, request
 from flask_cors import CORS
 import cv2
 import glob
 import os
 import base64
 import numpy as np
-from threading import Thread
 import logging
 import sys
 import time
@@ -16,7 +15,7 @@ from emailing import Alert  # Import the Alert function
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='../Website-Code')
-CORS(app, origins=["https://munibsmotiondetector.netlify.app"])  
+CORS(app, origins=["https://munibsmotiondetector.netlify.app"])
 
 # Initialize variables
 InitialFrame = None
@@ -24,9 +23,16 @@ motion_detected = False
 recipient_email = None
 latest_image_path = None
 
+# Set the base directory for images
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, 'images')
+
+# Ensure the image directory exists
+os.makedirs(IMAGE_DIR, exist_ok=True)
+
 # Function to clean up images
 def CleanImages():
-    images = glob.glob("../images/*.png")
+    images = glob.glob(os.path.join(IMAGE_DIR, "*.png"))
     for image in images:
         os.remove(image)
     logging.info("Cleaned up images")
@@ -63,7 +69,7 @@ def process_frame(frame):
 
         if rectangle.any():
             motion_detected = True
-            image_path = f"../images/{count}.png"
+            image_path = os.path.join(IMAGE_DIR, f"{count}.png")
             cv2.imwrite(image_path, frame)
             logging.info(f"Saved image {image_path}")
             latest_image_path = image_path
@@ -74,7 +80,7 @@ def process_frame(frame):
         if recipient_email:
             logging.info("Process started, sending alert...")
             # Get the latest saved image
-            latest_image_path = os.path.join("../images/", f"{count-1}.png")
+            latest_image_path = os.path.join(IMAGE_DIR, f"{count-1}.png")
             if os.path.exists(latest_image_path):
                 # Call the Alert function with recipient email and latest image path
                 Alert(recipient_email, latest_image_path)
@@ -85,7 +91,6 @@ def process_frame(frame):
 
     if not motion_detected:
         InitialFrame = grayFrameBlur
-
 
 # Route to process frames
 @app.route('/process_frame', methods=['POST'])
