@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Detector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+        header {
+            background-color: #0B0705;
+            color: #D9DDDC; /* Default font color for dark mode */
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: top 0.3s, background-color 0.3s, color 0.3s; /* Added background-color and color transitions */
+        }
+
+        header.hiding {
+            top: -60px; /* Adjust this value to match the header height */
+        }
+
+        header.light-mode {
+            background-color: #FCFFEA; /* Light mode background color */
+            color: #0081A7; /* Light mode font color */
+        }
+
+        header h1 {
+            margin: 15px;
+            font-size: 1.8rem;
+        }
+
+        nav a {
+            color: inherit; /* Inherit color from the parent (body) */
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1rem;
+        }
+
+        header.light-mode nav a {
+            color: #0081A7; /* Font color for light mode */
+        }
+
+        .mode-icon {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .moon-icon {
+            color: #D9DDDC; /* Default icon color for dark mode */
+        }
+
+        .sun-icon {
+            color: #0081A7; /* Icon color for light mode */
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
+        }
+
+        #main-content {
+            padding-top: 60px; /* Adjusted padding to prevent content from being hidden behind the header */
+        }
+
+        .section {
+            margin-top: 80px; /* Adjust this value to provide space for the fixed header */
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+
+    <header class="light-mode">
+        <h1>Real Time Motion Monitoring</h1>
+        <nav>
+            <a href="#main-content">Home</a>
+            <a href="#Instructions">Instructions</a>
+            <a href="#Motiondetector">Motion Detector</a>
+            <span class="mode-icon" onclick="toggleDarkMode()">
+                <i class="sun-icon fas fa-sun"></i>
+                <i class="moon-icon fas fa-moon" style="display: none;"></i>
+            </span>
+        </nav>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let isDarkMode = document.body.classList.contains('light-mode');
+            const body = document.body;
+            const header = document.querySelector('header');
+            const navLinks = document.querySelectorAll('nav a');
+            const moonIcon = document.querySelector('.moon-icon');
+            const sunIcon = document.querySelector('.sun-icon');
+            const headerHeight = header.offsetHeight; // Added to get the height of the header
+    
+            function toggleDarkMode() {
+                if (isDarkMode) {
+                    // Switch to light mode
+                    body.classList.remove('light-mode');
+                    header.classList.remove('light-mode');
+                    navLinks.forEach(link => link.classList.remove('light-mode'));
+                    moonIcon.style.display = 'inline';
+                    sunIcon.style.display = 'none';
+                } else {
+                    // Switch to dark mode
+                    body.classList.add('light-mode');
+                    header.classList.add('light-mode');
+                    navLinks.forEach(link => link.classList.add('light-mode'));
+                    moonIcon.style.display = 'none';
+                    sunIcon.style.display = 'inline';
+                }
+    
+                isDarkMode = !isDarkMode;
+            }
+    
+            let prevScrollPos = window.pageYOffset;
+    
+            window.onscroll = function () {
+                let currentScrollPos = window.pageYOffset;
+                if (prevScrollPos > currentScrollPos) {
+                    header.classList.remove('hiding');
+                } else {
+                    header.classList.add('hiding');
+                }
+                prevScrollPos = currentScrollPos;
+            };
+    
+            function scrollToHome() {
+                document.getElementById('main-content').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+    
+            function scrollToInstructions() {
+                document.getElementById('Instructions').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start', // Scroll to the start of the target element
+                    inline: 'nearest' // Scroll to the nearest edge of the target element
+                });
+            }
+    
+            function scrollToMotiondetector() {
+                document.getElementById('Motiondetector').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start', // Scroll to the start of the target element
+                    inline: 'nearest' // Scroll to the nearest edge of the target element
+                });
+            }
+    
+            // Toggle dark/light mode when the script is loaded
+            toggleDarkMode();
+    
+            // Add event listener for the mode icon click
+            document.querySelector('.mode-icon').addEventListener('click', toggleDarkMode);
+        });
+    </script>    
+
+</body>
+
+</html>
