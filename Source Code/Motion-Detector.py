@@ -26,7 +26,7 @@ latest_image_path = None
 
 # Function to clean up images
 def CleanImages():
-    images = glob.glob("./images/*.png")
+    images = glob.glob("../images/*.png")
     for image in images:
         os.remove(image)
     logging.info("Cleaned up images")
@@ -64,7 +64,7 @@ def process_frame(frame):
         if rectangle.any():
             motion_detected = True
             count += 1
-            image_path = f"./images/{count}.png"
+            image_path = f"../images/{count}.png"
             cv2.imwrite(image_path, frame)
             logging.info(f"Saved image {image_path}")
             latest_image_path = image_path
