@@ -16,7 +16,6 @@ from emailing import Alert  # Import the Alert function
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='../Website-Code')
-image_dir = os.path.join(os.path.dirname(__file__), '..', 'images')
 CORS(app, origins=["https://munibsmotiondetector.netlify.app"])  
 
 # Initialize variables
@@ -75,7 +74,7 @@ def process_frame(frame):
         if recipient_email:
             logging.info("Process started, sending alert...")
             # Get the latest saved image
-            latest_image_path = os.path.join(image_dir, f"image{count}.png")
+            latest_image_path = os.path.join("../images/", f"image{count}.png")
             if os.path.exists(latest_image_path):
                 # Call the Alert function with recipient email and latest image path
                 Alert(recipient_email, latest_image_path)
