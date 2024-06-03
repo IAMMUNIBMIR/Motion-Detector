@@ -1,44 +1,47 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, request
 from flask_cors import CORS
 import cv2
 import glob
 import os
 import base64
 import numpy as np
-from threading import Thread
 import logging
 import sys
-import time
+from threading import Thread
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert  # Import the Alert function
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__, template_folder='../Website-Code')
-CORS(app, origins=["https://munibsmotiondetector.netlify.app"])  
+app = Flask(__name__)
+CORS(app, origins=["*"])  # Allow all origins for debugging, be more restrictive in production
 
 # Initialize variables
 InitialFrame = None
 motion_detected = False
 recipient_email = None
-latest_image_path = None
+image_counter = 0
+image_dir = os.path.join(os.path.dirname(__file__), '..', 'images')
+
+# Ensure the image directory exists
+os.makedirs(image_dir, exist_ok=True)
 
 # Function to clean up images
 def CleanImages():
-    images = glob.glob("../images/*.png")
+    images = glob.glob(os.path.join(image_dir, "*.png"))
     for image in images:
         os.remove(image)
     logging.info("Cleaned up images")
 
 # Function to process a single frame
 def process_frame(frame):
-    global InitialFrame, motion_detected, recipient_email, latest_image_path
+    global InitialFrame, motion_detected, recipient_email, image_counter
 
     img_data = base64.b64decode(frame.split(',')[1])
     np_img = np.frombuffer(img_data, np.uint8)
     frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-    count = 0
+
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
 
@@ -63,19 +66,23 @@ def process_frame(frame):
 
         if rectangle.any():
             motion_detected = True
-            count += 1
-            image_path = f"../images/{count}.png"
+            image_counter += 1
+            image_path = os.path.join(image_dir, f"image{image_counter}.png")
             cv2.imwrite(image_path, frame)
             logging.info(f"Saved image {image_path}")
-            latest_image_path = image_path
 
     if motion_detected:
         logging.info("Motion detected, sending alert...")
         if recipient_email:
             logging.info("Process started, sending alert...")
-            # Call the Alert function with recipient email and image path
-            Alert(recipient_email, latest_image_path)
-            logging.info("Process finished, alert sent")
+            # Get the latest saved image
+            latest_image_path = os.path.join(image_dir, f"image{image_counter}.png")
+            if os.path.exists(latest_image_path):
+                # Call the Alert function with recipient email and latest image path
+                Alert(recipient_email, latest_image_path)
+                logging.info(f"Process finished, alert sent for {latest_image_path}")
+            else:
+                logging.error(f"File not found: {latest_image_path}")
         motion_detected = False  # Reset motion detection flag
 
     if not motion_detected:
