@@ -9,10 +9,11 @@ def Alert(recipient_email, image_path):
     print("Sending email to:", recipient_email)
     
     Message = EmailMessage()
-    Message["Subject"] = "New customer just showed up"
+    Message["Subject"] = "Motion Detected!"
     Message["From"] = SENDER
     Message["To"] = recipient_email
-    Message.set_content("Hey, we just saw a new customer")
+    Message.set_content("Alert: Motion detected. Please check the attached image for details.")
+
 
     with open(image_path, "rb") as file:
         content = file.read()
