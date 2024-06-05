@@ -7,8 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #11242B; /* Dark mode background color */
-            color: #03ACD9; /* Dark mode font color */
+            background-color: #11242B; /* Dark mode background color */ 
+            color: #0B657C; /* Dark mode font color */
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,8 +18,8 @@
         }
 
         body.light-mode {
-            background-color: #E6FEFF; /* Light mode background color */
-            color: #52E5FF; /* Light mode font color */
+            background-color: #29D8FF; /* Light mode background color */
+            color: #005E8A; /* Light mode font color */
         }
 
         h1 {
@@ -48,7 +48,7 @@
             position: relative;
             width: 640px;
             height: 480px;
-            margin-bottom: 100px; /* Added space below the video feed */
+            margin-bottom: 100px;
         }
 
         #video_feed {
@@ -85,7 +85,7 @@
         }
 
         body.light-mode #Instructions {
-            color: #52E5FF; /* Light mode font color */
+            color: #005E8A; /* Light mode font color */
         }
 
         #Instructions h2 {
@@ -134,22 +134,7 @@
             }
         }
 
-        footer {
-            display: none;
-            background-color: #0E4A5A;
-            color: #FFFFFF;
-            padding: 1rem;
-            width: 100%;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-        }
 
-        body.light-mode footer {
-            background-color: #00C7FC; /* Light mode footer background color */
-            color: #000000; /* Light mode footer font color */
-        }
     </style>
 </head>
 <body>
@@ -263,7 +248,7 @@
 
         // Show footer when the bottom of the page is reached
         window.addEventListener('scroll', function() {
-            const footer = document.getElementById('footer');
+            const footer = document.getElementById('myFooter');
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                 footer.style.display = 'block';
             } else {
