@@ -126,8 +126,36 @@
                 }
                 prevScrollPos = currentScrollPos;
             };
+
+            function scrollToHome() {
+                document.getElementById('main-content').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+
+            function scrollToInstructions() {
+                document.getElementById('Instructions').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start', // Scroll to the start of the target element
+                    inline: 'nearest' // Scroll to the nearest edge of the target element
+                });
+            }
+
+            function scrollToMotiondetector() {
+                document.getElementById('Motiondetector').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start', // Scroll to the start of the target element
+                    inline: 'nearest' // Scroll to the nearest edge of the target element
+                });
+            }
+
+            // Toggle dark/light mode when the script is loaded
+            toggleDarkMode();
+
+            // Add event listener for the mode icon click
+            document.querySelector('.mode-icon').addEventListener('click', toggleDarkMode);
         });
-    </script>
+    </script>    
 
 </body>
 </html>
