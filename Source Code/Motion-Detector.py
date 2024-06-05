@@ -8,7 +8,6 @@ import numpy as np
 import logging
 import sys
 import time
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert  # Import the Alert function
 
 # Configure logging
@@ -32,8 +31,12 @@ IMAGE_DIR = os.path.join(BASE_DIR, 'images')
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
 # Cooldown period settings
-cooldown_time = 5  # Cooldown time in seconds
+cooldown_time = 30  # Cooldown time in seconds
 last_alert_time = 0  # Last alert time
+
+# Frame skip settings
+frame_skip = 5  # Process every 5th frame
+frame_count = 0  # Counter for frames
 
 # Function to clean up images
 def CleanImages():
@@ -44,13 +47,19 @@ def CleanImages():
 
 # Function to process a single frame
 def process_frame(frame):
-    global InitialFrame, motion_detected, recipient_email, latest_image_path, count, last_alert_time
+    global InitialFrame, motion_detected, recipient_email, latest_image_path, count, last_alert_time, frame_count
 
     current_time = time.time()  # Get the current time
 
     img_data = base64.b64decode(frame.split(',')[1])
     np_img = np.frombuffer(img_data, np.uint8)
     frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+
+    if frame_count % frame_skip != 0:  # Skip frames based on frame_skip
+        frame_count += 1
+        return
+
+    frame_count = 0  # Reset frame count
 
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
