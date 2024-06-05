@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #11242B; /* Dark mode background color */ 
+            background-color: #11242B; /* Dark mode background color */
             color: #03ACD9; /* Dark mode font color */
             margin: 0;
             padding: 0;
@@ -48,6 +48,7 @@
             position: relative;
             width: 640px;
             height: 480px;
+            margin-bottom: 100px; /* Added space below the video feed */
         }
 
         #video_feed {
@@ -102,7 +103,7 @@
         }
 
         #Instructions-text p {
-            margin-bottom: 10em; /* Added space below the instructions paragraph */
+            margin-bottom: 100px; /* Added space below the instructions paragraph */
         }
 
         #scroll-arrow {
@@ -262,7 +263,7 @@
 
         // Show footer when the bottom of the page is reached
         window.addEventListener('scroll', function() {
-            const footer = document.getElementById('myFooter');
+            const footer = document.getElementById('footer');
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                 footer.style.display = 'block';
             } else {
