@@ -102,7 +102,7 @@
         }
 
         #Instructions-text p {
-            margin-bottom: 2em; /* Added space below the instructions paragraph */
+            margin-bottom: 10em; /* Added space below the instructions paragraph */
         }
 
         #scroll-arrow {
@@ -262,7 +262,7 @@
 
         // Show footer when the bottom of the page is reached
         window.addEventListener('scroll', function() {
-            const footer = document.getElementById('footer');
+            const footer = document.getElementById('myFooter');
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                 footer.style.display = 'block';
             } else {

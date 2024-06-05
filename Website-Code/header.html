@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,10 +71,9 @@
         }
     </style>
 </head>
+<body>
 
-<body class="light-mode">
-
-    <header class="light-mode">
+    <header>
         <h1>Real Time Motion Monitoring</h1>
         <nav>
             <a href="#main-content">Home</a>
@@ -96,8 +94,7 @@
             const navLinks = document.querySelectorAll('nav a');
             const moonIcon = document.querySelector('.moon-icon');
             const sunIcon = document.querySelector('.sun-icon');
-            const headerHeight = header.offsetHeight; // Added to get the height of the header
-    
+
             function toggleDarkMode() {
                 if (isDarkMode) {
                     // Switch to light mode
@@ -114,12 +111,12 @@
                     moonIcon.style.display = 'none';
                     sunIcon.style.display = 'inline';
                 }
-    
+
                 isDarkMode = !isDarkMode;
             }
-    
+
             let prevScrollPos = window.pageYOffset;
-    
+
             window.onscroll = function () {
                 let currentScrollPos = window.pageYOffset;
                 if (prevScrollPos > currentScrollPos) {
@@ -129,13 +126,13 @@
                 }
                 prevScrollPos = currentScrollPos;
             };
-    
+
             function scrollToHome() {
                 document.getElementById('main-content').scrollIntoView({
                     behavior: 'smooth'
                 });
             }
-    
+
             function scrollToInstructions() {
                 document.getElementById('Instructions').scrollIntoView({
                     behavior: 'smooth',
@@ -143,7 +140,7 @@
                     inline: 'nearest' // Scroll to the nearest edge of the target element
                 });
             }
-    
+
             function scrollToMotiondetector() {
                 document.getElementById('Motiondetector').scrollIntoView({
                     behavior: 'smooth',
@@ -151,15 +148,14 @@
                     inline: 'nearest' // Scroll to the nearest edge of the target element
                 });
             }
-    
+
             // Toggle dark/light mode when the script is loaded
             toggleDarkMode();
-    
+
             // Add event listener for the mode icon click
             document.querySelector('.mode-icon').addEventListener('click', toggleDarkMode);
         });
     </script>    
 
 </body>
-
 </html>
