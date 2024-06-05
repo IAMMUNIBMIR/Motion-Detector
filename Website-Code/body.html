@@ -102,7 +102,7 @@
         }
 
         #Instructions-text p {
-            margin-bottom: 1em;
+            margin-bottom: 2em; /* Added space below the instructions paragraph */
         }
 
         #scroll-arrow {
@@ -131,6 +131,23 @@
             60% {
                 transform: translateY(-5px);
             }
+        }
+
+        footer {
+            display: none;
+            background-color: #0E4A5A;
+            color: #FFFFFF;
+            padding: 1rem;
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        body.light-mode footer {
+            background-color: #00C7FC; /* Light mode footer background color */
+            color: #000000; /* Light mode footer font color */
         }
     </style>
 </head>
@@ -176,6 +193,10 @@
     <div id="video-container">
         <video id="video_feed" autoplay playsinline></video>
     </div>
+
+    <footer id="footer">
+        <p>Thank you for using our Motion Detection System!</p>
+    </footer>
 
     <script>
         document.getElementById('email-form').addEventListener('submit', function(event) {
@@ -238,6 +259,16 @@
 
         // Start the camera on page load
         window.onload = startCamera;
+
+        // Show footer when the bottom of the page is reached
+        window.addEventListener('scroll', function() {
+            const footer = document.getElementById('footer');
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                footer.style.display = 'block';
+            } else {
+                footer.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
