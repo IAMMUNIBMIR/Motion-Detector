@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #11242B; /* Dark mode background color */
+            background-color: #11242B; /* Dark mode background color */ 
             color: #03ACD9; /* Dark mode font color */
             margin: 0;
             padding: 0;
@@ -44,12 +44,10 @@
         }
 
         #video-container {
-            margin-top: 40px; /* Increased margin to move the video feed down */
+            margin-top: 20px;
             position: relative;
             width: 640px;
             height: 480px;
-            display: flex;
-            justify-content: center; /* Centering the video feed */
         }
 
         #video_feed {
@@ -81,7 +79,7 @@
             padding: 2rem;
             text-align: center;
             color: #03ACD9;
-            margin-top: 100vh; /* Moved instructions section down */
+            margin-top: 50px;
             transform: translateY(20px);
         }
 
@@ -134,43 +132,112 @@
                 transform: translateY(-5px);
             }
         }
-
     </style>
 </head>
-<body class="light-mode">
+<body>
 
     <div id="main-content">
-        <h1>Welcome to Motion Detector</h1>
-        <h2>Real-time Monitoring</h2>
-        <div id="email-section">
-            <input type="email" id="recipientEmail" placeholder="Enter your email">
-            <button id="activateButton">Activate Motion Detector</button>
-        </div>
-        <div id="activationMessage"></div>
-        <div id="video-container">
-            <img id="video_feed" src="{{ url_for('video_feed') }}">
+        <h1>Welcome to my Motion Detector</h1>
+        <h2>Motion in Focus: Your Gateway to Surveillance</h2>
+    </div>
+
+    <div id="Instructions" class="active">
+        <div id="Instructions-text">
+            <h2>Instructions</h2>
+            <h3><u>How To Use</u></h3>
+            <p>
+                <br>
+                Welcome to my Motion Detection System! Follow these simple steps to set up and start receiving alerts:
+                <br><br>
+                1. Enter Your Email: Begin by entering your email address in the provided textbox in the motion detector section. 
+                <br>All alerts will be sent to this email.
+                <br><br>
+                2. Submit Your Email: After entering your email, simply click enter or the "Activate" button. 
+                <br>Please wait a few seconds for the system to process your information.
+                <br><br>
+                3. Confirmation: Once your email is confirmed, a text message will appear on the screen indicating that the email has been successfully registered.
+                <br><br>
+                4. Receive Alerts: When motion is detected, you will receive an email alert with an image of the detected motion. Ensure your email notifications are enabled to stay updated.
+                <br><br>
+                5. Stop Monitoring: To stop the motion detection, simply close the browser window.
+            </p>
         </div>
     </div>
 
-    <div id="Instructions">
-        <h2>Instructions</h2>
-        <div id="Instructions-text">
-            <p>Welcome to the Real-time Motion Monitoring system. This tool helps you monitor motion in a specified area through your camera feed. Follow the instructions below to get started:</p>
-            <p>1. Ensure your camera is connected and properly configured.</p>
-            <p>2. Enter your email address in the input field provided and click on "Activate Motion Detector" to start receiving motion alerts.</p>
-            <p>3. Once activated, the system will monitor for any movement and send you email notifications with snapshots of detected motion.</p>
-            <p>4. To switch between dark mode and light mode, click on the sun/moon icon in the navigation bar.</p>
-            <p>For any issues or further assistance, please refer to the help documentation or contact support.</p>
-            <p>Thank you for using our Real-time Motion Monitoring system!</p>
-        </div>
+    <div id="Motiondetector">
+        <h2>Enter your email address to activate the motion detector.</h2>
+        <form id="email-form">
+            <input type="email" id="recipientEmail" name="email" placeholder="Enter recipient email address" required>
+            <button type="submit" id="activateButton">Activate</button>
+        </form>
+        <p id="activationMessage" class="hidden">Motion detector activated. You will receive notifications via email.</p>
+    </div>
+
+    <div id="video-container">
+        <video id="video_feed" autoplay playsinline></video>
     </div>
 
     <script>
-        // Dark mode toggle script
-        function toggleDarkMode() {
-            const body = document.body;
-            const isDarkMode = body.classList.toggle('light-mode');
+        document.getElementById('email-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            var email = document.getElementById('recipientEmail').value;
+            console.log("Email entered: " + email); // Debugging statement
+            fetch('https://motion-detector.onrender.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'email=' + encodeURIComponent(email)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Email submitted successfully"); // Debugging statement
+                    document.getElementById('activationMessage').classList.remove('hidden');
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Request access to the camera
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    var video = document.getElementById('video_feed');
+                    video.srcObject = stream;
+
+                    // Send video frames to the backend
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    function sendFrame() {
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                            const frame = canvas.toDataURL('image/jpeg');
+                            fetch('https://motion-detector.onrender.com/process_frame', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ frame: frame })
+                            }).catch(error => console.error('Error sending frame:', error));
+                        }
+                        requestAnimationFrame(sendFrame);
+                    }
+                    sendFrame();
+                })
+                .catch(function(err) {
+                    console.error('An error occurred: ', err);
+                    alert('Camera access denied or not available.');
+                });
         }
+
+        // Start the camera on page load
+        window.onload = startCamera;
     </script>
 </body>
 </html>
