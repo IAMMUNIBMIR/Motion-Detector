@@ -7,7 +7,6 @@ import base64
 import numpy as np
 import logging
 import sys
-import time
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert  # Import the Alert function
 
@@ -22,6 +21,7 @@ InitialFrame = None
 motion_detected = False
 recipient_email = None
 latest_image_path = None
+count = 0  # Initialize count as a global variable
 
 # Set the base directory for images
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,12 +39,12 @@ def CleanImages():
 
 # Function to process a single frame
 def process_frame(frame):
-    global InitialFrame, motion_detected, recipient_email, latest_image_path
+    global InitialFrame, motion_detected, recipient_email, latest_image_path, count
 
     img_data = base64.b64decode(frame.split(',')[1])
     np_img = np.frombuffer(img_data, np.uint8)
     frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-    count = 0
+
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grayFrameBlur = cv2.GaussianBlur(grayFrame, (21, 21), 0)
 
@@ -79,8 +79,6 @@ def process_frame(frame):
         logging.info("Motion detected, sending alert...")
         if recipient_email:
             logging.info("Process started, sending alert...")
-            # Get the latest saved image
-            latest_image_path = os.path.join(IMAGE_DIR, f"{count-1}.png")
             if os.path.exists(latest_image_path):
                 # Call the Alert function with recipient email and latest image path
                 Alert(recipient_email, latest_image_path)
