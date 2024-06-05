@@ -31,11 +31,11 @@ IMAGE_DIR = os.path.join(BASE_DIR, 'images')
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
 # Cooldown period settings
-cooldown_time = 30  # Cooldown time in seconds
+cooldown_time = 5  # Cooldown time in seconds
 last_alert_time = 0  # Last alert time
 
 # Frame skip settings
-frame_skip = 45  
+frame_skip = 2  
 frame_count = 0  # Counter for frames
 
 # Function to clean up images
