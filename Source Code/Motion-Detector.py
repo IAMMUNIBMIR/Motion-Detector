@@ -35,7 +35,7 @@ cooldown_time = 30  # Cooldown time in seconds
 last_alert_time = 0  # Last alert time
 
 # Frame skip settings
-frame_skip = 5  # Process every 5th frame
+frame_skip = 60  # Process every 5th frame
 frame_count = 0  # Counter for frames
 
 # Function to clean up images
