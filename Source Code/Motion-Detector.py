@@ -7,6 +7,7 @@ import base64
 import numpy as np
 import logging
 import sys
+import time
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert  # Import the Alert function
 
@@ -21,7 +22,7 @@ InitialFrame = None
 motion_detected = False
 recipient_email = None
 latest_image_path = None
-count = 0  # Initialize count as a global variable
+count = 0  # Counter for saved images
 
 # Set the base directory for images
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +30,10 @@ IMAGE_DIR = os.path.join(BASE_DIR, 'images')
 
 # Ensure the image directory exists
 os.makedirs(IMAGE_DIR, exist_ok=True)
+
+# Cooldown period settings
+cooldown_time = 5  # Cooldown time in seconds
+last_alert_time = 0  # Last alert time
 
 # Function to clean up images
 def CleanImages():
@@ -39,7 +44,9 @@ def CleanImages():
 
 # Function to process a single frame
 def process_frame(frame):
-    global InitialFrame, motion_detected, recipient_email, latest_image_path, count
+    global InitialFrame, motion_detected, recipient_email, latest_image_path, count, last_alert_time
+
+    current_time = time.time()  # Get the current time
 
     img_data = base64.b64decode(frame.split(',')[1])
     np_img = np.frombuffer(img_data, np.uint8)
@@ -54,14 +61,14 @@ def process_frame(frame):
         return
 
     FrameDiff = cv2.absdiff(InitialFrame, grayFrameBlur)
-    ThreshFrame = cv2.threshold(FrameDiff, 60, 255, cv2.THRESH_BINARY)[1]
+    ThreshFrame = cv2.threshold(FrameDiff, 25, 255, cv2.THRESH_BINARY)[1]
     DilatedFrame = cv2.dilate(ThreshFrame, None, iterations=2)
 
     contours, _ = cv2.findContours(DilatedFrame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     for contour in contours:
         contour_area = cv2.contourArea(contour)
-        if contour_area < 5000:
+        if contour_area < 1000:
             continue
 
         x, y, width, height = cv2.boundingRect(contour)
@@ -75,7 +82,7 @@ def process_frame(frame):
             latest_image_path = image_path
             count += 1
 
-    if motion_detected:
+    if motion_detected and current_time - last_alert_time > cooldown_time:
         logging.info("Motion detected, sending alert...")
         if recipient_email:
             logging.info("Process started, sending alert...")
@@ -83,6 +90,7 @@ def process_frame(frame):
                 # Call the Alert function with recipient email and latest image path
                 Alert(recipient_email, latest_image_path)
                 logging.info(f"Process finished, alert sent for {latest_image_path}")
+                last_alert_time = current_time  # Update the last alert time
             else:
                 logging.error(f"File not found: {latest_image_path}")
         motion_detected = False  # Reset motion detection flag
