@@ -22,7 +22,6 @@ InitialFrame = None
 motion_detected = False
 recipient_email = None
 latest_image_path = None
-count = 0  # Counter for saved images
 
 # Set the base directory for images
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +47,7 @@ def CleanImages():
 
 # Function to process a single frame
 def process_frame(frame):
-    global InitialFrame, motion_detected, recipient_email, latest_image_path, count, last_alert_time, frame_count
+    global InitialFrame, motion_detected, recipient_email, latest_image_path, last_alert_time, frame_count
 
     current_time = time.time()  # Get the current time
 
@@ -86,11 +85,10 @@ def process_frame(frame):
 
         if rectangle.any():
             motion_detected = True
-            image_path = os.path.join(IMAGE_DIR, f"{count}.png")
+            image_path = os.path.join(IMAGE_DIR, f"detected_motion.png")
             cv2.imwrite(image_path, frame)
             logging.info(f"Saved image {image_path}")
             latest_image_path = image_path
-            count += 1
 
     if motion_detected and current_time - last_alert_time > cooldown_time:
         logging.info("Motion detected, sending alert...")

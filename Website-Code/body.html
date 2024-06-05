@@ -133,8 +133,6 @@
                 transform: translateY(-5px);
             }
         }
-
-
     </style>
 </head>
 <body>
@@ -217,21 +215,28 @@
                     // Send video frames to the backend
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
+                    let lastFrameTime = 0; // Time of the last frame sent
+                    const frameInterval = 2000; // Interval between frames in milliseconds (e.g., 2000ms = 2 seconds)
 
                     function sendFrame() {
-                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
-                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const currentTime = Date.now();
+                        if (currentTime - lastFrameTime >= frameInterval) {
+                            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                                canvas.width = video.videoWidth;
+                                canvas.height = video.videoHeight;
+                                context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                            const frame = canvas.toDataURL('image/jpeg');
-                            fetch('https://motion-detector.onrender.com/process_frame', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ frame: frame })
-                            }).catch(error => console.error('Error sending frame:', error));
+                                const frame = canvas.toDataURL('image/jpeg');
+                                fetch('https://motion-detector.onrender.com/process_frame', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ frame: frame })
+                                }).catch(error => console.error('Error sending frame:', error));
+
+                                lastFrameTime = currentTime; // Update the last frame time
+                            }
                         }
                         requestAnimationFrame(sendFrame);
                     }
