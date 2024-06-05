@@ -8,6 +8,7 @@ import numpy as np
 import logging
 import sys
 import time
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from emailing import Alert  # Import the Alert function
 
 # Configure logging
@@ -31,7 +32,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, 'images')
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
 # Cooldown period settings
-cooldown_time = 30  # Cooldown time in seconds
+cooldown_time = 45  # Cooldown time in seconds
 last_alert_time = 0  # Last alert time
 
 # Frame skip settings
