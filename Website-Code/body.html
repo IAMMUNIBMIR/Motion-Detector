@@ -14,6 +14,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; /* Center the content vertically */
+            min-height: 100vh; /* Ensure the body takes at least 100% height of the viewport */
             text-align: center;
         }
 
@@ -25,12 +27,13 @@
         h1 {
             font-size: 5rem;
             font-weight: bold;
-            margin-top: 10vh;
+            margin: 0; /* Remove default margin */
         }
 
         h2 {
             font-size: 3rem;
             font-weight: bold;
+            margin: 0; /* Remove default margin */
         }
 
         #email-section {
@@ -80,7 +83,6 @@
             padding: 2rem;
             text-align: center;
             color: #0788AB;
-            margin-top: 50px;
             transform: translateY(20px);
             margin-top: 20vh;
         }
