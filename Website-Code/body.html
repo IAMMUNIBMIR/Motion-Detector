@@ -22,10 +22,21 @@
             color: #005E8A; /* Light mode font color */
         }
 
+        h1, h2 {
+            margin: 0;
+        }
+
+        #main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+        }
+
         h1 {
             font-size: 5rem;
             font-weight: bold;
-            margin-top: 10vh;
         }
 
         h2 {
@@ -80,7 +91,7 @@
             padding: 2rem;
             text-align: center;
             color: #0788AB;
-            margin-top: 100px;
+            margin-top: 100vh; /* Moved below the viewport */
             transform: translateY(20px);
         }
 
@@ -105,7 +116,6 @@
         #Instructions-text p {
             margin-bottom: 100px; /* Added space below the instructions paragraph */
         }
-
 
     </style>
 </head>
@@ -216,7 +226,7 @@
                     }
 
                     // Delay sending frames by 1 minute (60000 milliseconds)
-                    setTimeout(sendFrame, 50000);
+                    setTimeout(sendFrame, 60000);
                 })
                 .catch(function(err) {
                     console.error('An error occurred: ', err);
