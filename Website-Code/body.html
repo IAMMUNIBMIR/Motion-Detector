@@ -103,36 +103,11 @@
         }
 
         #Instructions-text p {
+            margin-top: 100px;
             margin-bottom: 100px; /* Added space below the instructions paragraph */
         }
 
-        #scroll-arrow {
-            position: absolute;
-            bottom: -2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2rem;
-            cursor: pointer;
-            animation: bounce 1s infinite;
-            color: #0E4A5A;
-            z-index: 1;
-        }
 
-        body.light-mode #scroll-arrow {
-            color: #00C7FC; /* Light mode arrow color */
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -212,11 +187,11 @@
                     var video = document.getElementById('video_feed');
                     video.srcObject = stream;
 
-                    // Send video frames to the backend
+                    // Send video frames to the backend after a delay
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
                     let lastFrameTime = 0; // Time of the last frame sent
-                    const frameInterval = 1000; // Interval between frames in milliseconds (e.g., 2000ms = 2 seconds)
+                    const frameInterval = 750; // Interval between frames in milliseconds (e.g., 2000ms = 2 seconds)
 
                     function sendFrame() {
                         const currentTime = Date.now();
@@ -240,7 +215,9 @@
                         }
                         requestAnimationFrame(sendFrame);
                     }
-                    sendFrame();
+
+                    // Delay sending frames by 1 minute (60000 milliseconds)
+                    setTimeout(sendFrame, 50000);
                 })
                 .catch(function(err) {
                     console.error('An error occurred: ', err);
