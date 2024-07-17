@@ -1,4 +1,3 @@
-
 def concatenate_html():
     # Read the content of header.html
     with open("Website-Code/header.html", 'r', encoding='utf-8') as file:
