@@ -19,5 +19,7 @@ Website: https://munibsmotiondetector.netlify.app
 
 Python 🐍
 OpenCV (for image processing)
+
 NumPy (for matrix operations)
+
 Matplotlib (for graphical analysis)
