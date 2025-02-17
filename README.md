@@ -17,7 +17,7 @@ Website: https://munibsmotiondetector.netlify.app
 
 ## Technologies Used
 
-Python 🐍
+Python 
 OpenCV (for image processing)
 
 NumPy (for matrix operations)
