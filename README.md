@@ -1,25 +1,26 @@
-# Motion-Detector
+# Motion Detector
 
-## Overview
-
-The Motion Detector is a Python-based application that detects movement using a webcam and highlights motion in real-time. It uses OpenCV for image processing and NumPy for efficient computations. The project is ideal for security applications, automation, and general object movement tracking.
+Motion Detector is a lightweight, real-time surveillance application developed using Python and OpenCV. It transforms your computer’s webcam into a smart motion-tracking system that captures evidence and sends it via email alerts when movement is detected.
 
 ## Features
 
-Real-time Motion Detection using a webcam.
-Motion Highlighting to visualize detected movement.
-Graphical Representation of motion over time.
-Logs Motion Events with timestamps.
-
-## How to use
-
-Website: https://munibsmotiondetector.netlify.app
+- **Real-Time Surveillance**: Constantly monitors video feed for motion using frame differencing.
+- **Automated Snapshot Capture**: Stores key frames at the moment of detected activity.
+- **Email Alerts**: Sends out automated email notifications with image evidence.
+- **Multithreaded Design**: Ensures smooth performance through asynchronous processing.
+- **Configurable Settings**: Easily customizable sensitivity, alert frequency, and mail configurations.
 
 ## Technologies Used
 
-Python 
-OpenCV (for image processing)
+- **Computer Vision**: OpenCV
+- **Backend**: Python
+- **Web Layer**: Flask (optional UI)
+- **System Design**: Modular architecture with multithreading
 
-NumPy (for matrix operations)
+## Website
 
-Matplotlib (for graphical analysis)
+👉 [Try the Motion Detector](https://munibsmotiondetector.netlify.app)
+
+## Educational Value
+
+This project offers a deep dive into the fundamentals of computer vision and systems programming. It emphasizes low-level image processing techniques, event-driven automation, and secure local deployment. Perfect for exploring privacy-respecting surveillance solutions or integrating vision-based logic into broader IoT ecosystems.
